@@ -1,42 +1,41 @@
 // script.js
 // -----------------------------
-// Handles talking to the server
+// Handles communication with the server
 // -----------------------------
 
 const form = document.getElementById("zodiac-form");
-const input = document.getElementById("sign");
+const select = document.getElementById("sign");  // Changed from input to select
 const list = document.getElementById("sign-list");
 
-// When the form is submitted
+// Submit a new sign
 form.addEventListener("submit", async (event) => {
     event.preventDefault(); // stop page reload
 
-    const sign = input.value.trim();
+    const sign = select.value;  // Get selected value from dropdown
     if (!sign) return;
 
-    // Send sign to the server
     await fetch("/api/add-sign", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sign })
     });
 
-    input.value = ""; // clear input
+    select.value = ""; // clear selection
     loadSigns(); // refresh list
 });
 
-// Load all signs from the server
+// Load all signs from server
 async function loadSigns() {
     const res = await fetch("/api/signs");
     const signs = await res.json();
 
-    list.innerHTML = ""; // clear list
+    list.innerHTML = "";
     signs.forEach((sign) => {
-        const li = document.createElement("li");
-        li.textContent = sign;
-        list.appendChild(li);
+        const div = document.createElement("div");
+        div.textContent = sign;
+        list.appendChild(div);
     });
 }
 
-// Load signs when page starts
+// Load signs on page load
 loadSigns();
